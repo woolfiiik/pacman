@@ -598,6 +598,18 @@ document.addEventListener('DOMContentLoaded', function() {
         this.context.stroke();
         this.context.fill();
     }
+    Draw.circle = function(x,y,radius,angle1,angle2,c,clockwise=false,lineWidth=false){
+        this.context.beginPath();
+        this.context.strokeStyle = c;
+        this.context.fillStyle=c;
+        if(lineWidth){
+            this.context.lineWidth=lineWidth;
+        }
+        this.context.arc(x,y,radius,angle1,angle2,clockwise);
+        this.context.closePath();
+        this.context.stroke();
+        this.context.fill();
+    }
 
     Draw.ghost = function (x,y,color,direction=null) {
         var radius = this.PUZZLE_SIZE/2.5;
@@ -605,81 +617,19 @@ document.addEventListener('DOMContentLoaded', function() {
             color='rgba(200, 200, 200, 1)';
         }
         const angle = Math.PI/180;
-        this.context.beginPath();
-        this.context.strokeStyle = color;
-        this.context.fillStyle=color;
-        this.context.lineWidth=0;
-        this.context.arc(x,y,radius,angle*0,angle*360,true);
-        this.context.stroke();
-        this.context.fill();
 
-        this.context.beginPath();
-        this.context.strokeStyle = color;
-        this.context.fillStyle=color;
-        this.context.arc(x+radius/1.6,y+radius/1.5,this.PUZZLE_SIZE/6, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
+        this.circle(x,y,radius,angle*0,angle*360,color,true,0);
+        this.circle(x+radius/1.6,y+radius/1.5,this.PUZZLE_SIZE/6,0,2 * Math.PI,color);
+        this.circle(x,y+radius/1.5,this.PUZZLE_SIZE/6,0,2 * Math.PI,color);
+        this.circle(x-radius/1.6,y+radius/1.5,this.PUZZLE_SIZE/6,0,2 * Math.PI,color);
+        this.circle(x+radius/3,y-radius/2.5,this.PUZZLE_SIZE/9,0,2 * Math.PI,"black");
+        this.circle(x+radius/3,y-radius/2.5,this.PUZZLE_SIZE/30,0,2 * Math.PI,color);
+        this.circle(x-radius/3,y-radius/2,this.PUZZLE_SIZE/9,0,2 * Math.PI,'black');
+        this.circle(x-radius/3,y-radius/2,this.PUZZLE_SIZE/30,0,2 * Math.PI,color);
+        this.circle(x,y+radius/3,radius/3,angle*0,angle*360,'black',true);
 
-        this.context.beginPath();
-        this.context.strokeStyle = color;
-        this.context.fillStyle=color;
-        this.context.arc(x,y+radius/1.5,this.PUZZLE_SIZE/6, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-
-        this.context.beginPath();
-        this.context.strokeStyle = color;
-        this.context.fillStyle=color;
-        this.context.arc(x-radius/1.6,y+radius/1.5,this.PUZZLE_SIZE/6, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-
-        this.context.beginPath();
-        this.context.strokeStyle = 'black';
-        this.context.fillStyle='black';
-        this.context.arc(x+radius/3,y-radius/2.5,this.PUZZLE_SIZE/9, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = color;
-        this.context.fillStyle=color;
-        this.context.arc(x+radius/3,y-radius/2.5,this.PUZZLE_SIZE/30, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = 'black';
-        this.context.fillStyle='black';
-        this.context.arc(x-radius/3,y-radius/2,this.PUZZLE_SIZE/9, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = color;
-        this.context.fillStyle=color;
-        this.context.arc(x-radius/3,y-radius/2,this.PUZZLE_SIZE/30, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = 'black';
-        this.context.fillStyle='black';
-        this.context.arc(x,y+radius/3,radius/3,angle*0,angle*360,true);        
-        this.context.closePath();    
-        this.context.stroke();
-        this.context.fill();
         if(Game.IMMORTALITY){
-            this.context.beginPath();
-            this.context.strokeStyle = color;
-            this.context.fillStyle=color;
-            this.context.arc(x,y+radius/2,radius/3,angle*0,angle*360,true);        
-            this.context.closePath();    
-            this.context.stroke();
-            this.context.fill();
+            this.circle(x,y+radius/2,radius/3,angle*0,angle*360,color,true);
         }  
     }
 
@@ -690,6 +640,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.context.beginPath();
         this.context.strokeStyle = 'yellow';
         this.context.fillStyle='yellow';
+        
         if(direction=='left'){
             this.context.arc(x,y,radius,angle*140,angle*220,true);
         }
@@ -699,55 +650,22 @@ document.addEventListener('DOMContentLoaded', function() {
         else{
             this.context.arc(x,y,radius,angle*30,angle*330,false);
         }
+
         this.context.lineTo(x,y);       
         this.context.closePath();    
         this.context.stroke();
         this.context.fill();
+
         if(direction!='up'){
-            this.context.beginPath();
-            this.context.strokeStyle = 'white';
-            this.context.fillStyle='white';
-            this.context.arc(x+radius/3,y-radius/2,this.PUZZLE_SIZE/9, 0, 2 * Math.PI);
-            this.context.closePath();
-            this.context.stroke();
-            this.context.fill();
-            this.context.beginPath();
-            this.context.strokeStyle = 'black';
-            this.context.fillStyle='black';
-            this.context.arc(x+radius/3,y-radius/2,this.PUZZLE_SIZE/30, 0, 2 * Math.PI);
-            this.context.closePath();
-            this.context.stroke();
-            this.context.fill();
+            this.circle(x+radius/3,y-radius/2,this.PUZZLE_SIZE/9,0,2 * Math.PI,'white');
+            this.circle(x+radius/3,y-radius/2,this.PUZZLE_SIZE/30,0,2 * Math.PI,'black');
         }
+
         if(direction=='down'){
-            this.context.beginPath();
-            this.context.strokeStyle = 'white';
-            this.context.fillStyle='white';
-            this.context.arc(x-radius/3,y-radius/2,this.PUZZLE_SIZE/9, 0, 2 * Math.PI);
-            this.context.closePath();
-            this.context.stroke();
-            this.context.fill();
-            this.context.beginPath();
-            this.context.strokeStyle = 'black';
-            this.context.fillStyle='black';
-            this.context.arc(x-radius/3,y-radius/2,this.PUZZLE_SIZE/30, 0, 2 * Math.PI);
-            this.context.closePath();
-            this.context.stroke();
-            this.context.fill();
-            this.context.beginPath();
-            this.context.strokeStyle = 'black';
-            this.context.fillStyle='black';
-            this.context.arc(x,y,radius/1.4,angle*160,angle*380,true);        //angle*190,angle*350 smile
-            this.context.closePath();    
-            this.context.stroke();
-            this.context.fill();
-            this.context.beginPath();
-            this.context.strokeStyle = 'black';
-            this.context.fillStyle='black';
-            this.context.arc(x,y+radius/1.8,radius/1.4,angle*200,angle*340,false);        //angle*190,angle*350 smile
-            this.context.closePath();    
-            this.context.stroke();
-            this.context.fill();
+            this.circle(x-radius/3,y-radius/2,this.PUZZLE_SIZE/9,0,2 * Math.PI,'white');
+            this.circle(x-radius/3,y-radius/2,this.PUZZLE_SIZE/30,0,2 * Math.PI,'black');
+            this.circle(x,y,radius/1.4,angle*160,angle*380,'black',true); //angle*190,angle*350 smile
+            this.circle(x,y+radius/1.8,radius/1.4,angle*200,angle*340,'black'); //angle*190,angle*350 smile
         }
     }
 
