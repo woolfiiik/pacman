@@ -84,5 +84,9 @@
             
         ]
     };
+
+    Board.clearField = function(x,y){
+        Board.MAP[y][x]=' ';
+    }
     
 

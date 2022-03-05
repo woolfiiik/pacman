@@ -762,8 +762,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     Player.move = function(diffX,diffY,direction) {
-        let position=Board.MAP[this.START_POS_Y+diffY][this.START_POS_X+diffX];
-        switch (position) {
+        let x = this.START_POS_X+diffX;
+        let y = this.START_POS_Y+diffY;
+        switch (Board.MAP[y][x]) {
             case '#':
                 Sounds.playSound(Sounds.STEP_WRONG,1);
                 return;
@@ -771,19 +772,19 @@ document.addEventListener('DOMContentLoaded', function() {
             case '*':
                 Game.SCORE+=10;
                 Draw.scoreText();
-                position=' ';
+                Board.clearField(x,y);
                 Sounds.playSound(Sounds.POLK,1);
                 break;
             case 'D':
                 Game.SCORE+=500;
                 Draw.scoreText();
-                position=' ';
+                Board.clearField(x,y);;
                 Sounds.playSound(Sounds.DIAMOND,1);
                 break;
             case '+':
                 Game.SCORE+=50;
                 Draw.scoreText();
-                position=' ';
+                Board.clearField(x,y);;
                 Sounds.playSound(Sounds.PILL,1);
                 Sounds.playSound(Sounds.PILL10,0.3);
                 if(Game.IMMORTALITY==true){
@@ -798,12 +799,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 Draw.scoreText();
                 Player.INVENTORY.push('K');
                 Draw.updateInventory();
-                position=' ';
+                Board.clearField(x,y);;
                 Sounds.playSound(Sounds.PILL,1);
                 break;
             case '-':
                 if(Player.searchInventory('K')){
-                    position=' ';
+                    Board.clearField(x,y);;
                     var index = Player.INVENTORY.indexOf('K');
                     if (index !== -1) {
                         Player.INVENTORY.splice(index, 1);
@@ -818,7 +819,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case '|':
                 if(Player.searchInventory('K')){
-                    position=' ';
+                    Board.clearField(x,y);
                     var index = Player.INVENTORY.indexOf('K');
                     if (index !== -1) {
                         Player.INVENTORY.splice(index, 1);
