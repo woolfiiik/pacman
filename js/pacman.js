@@ -378,41 +378,12 @@ document.addEventListener('DOMContentLoaded', function() {
         this.context.closePath();    
         this.context.stroke();
         this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = 'white';
-        this.context.fillStyle='white';
-        this.context.arc(x+radius/3,y-radius/2,this.PUZZLE_SIZE/2.5, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = 'black';
-        this.context.fillStyle='black';
-        this.context.arc(x+radius/3,y-radius/2,this.PUZZLE_SIZE/8, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = 'orange';
-        this.context.fillStyle='orange';
-        this.context.arc(x+radius*1.2,y+radius/8,this.PUZZLE_SIZE/2.1, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = 'orange';
-        this.context.fillStyle='orange';
-        this.context.arc(x+radius*2,y+radius/8,this.PUZZLE_SIZE/2.1, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
-        this.context.beginPath();
-        this.context.strokeStyle = 'orange';
-        this.context.fillStyle='orange';
-        this.context.arc(x+radius*2.8,y+radius/8,this.PUZZLE_SIZE/2.1, 0, 2 * Math.PI);
-        this.context.closePath();
-        this.context.stroke();
-        this.context.fill();
+
+        this.circle(x+radius/3,y-radius/2,this.PUZZLE_SIZE/2.5,0,2 * Math.PI,'white');
+        this.circle(x+radius/3,y-radius/2,this.PUZZLE_SIZE/8,0,2 * Math.PI,'black');
+        this.circle(x+radius*1.2,y+radius/8,this.PUZZLE_SIZE/2.1,0,2 * Math.PI,'orange');
+        this.circle(x+radius*2,y+radius/8,this.PUZZLE_SIZE/2.1,0,2 * Math.PI,'orange');
+        this.circle(x+radius*2.8,y+radius/8,this.PUZZLE_SIZE/2.1,0,2 * Math.PI,'orange');
     }
 
 
@@ -640,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.context.beginPath();
         this.context.strokeStyle = 'yellow';
         this.context.fillStyle='yellow';
-        
+
         if(direction=='left'){
             this.context.arc(x,y,radius,angle*140,angle*220,true);
         }
