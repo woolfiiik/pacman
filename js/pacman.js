@@ -246,6 +246,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.draw(this.COORDINATES_X,this.COORDINATES_Y,this.COLOR);
                 
             }
+            else{
+                this.FOLLOW_WAY=[];
+            }
             if(this.PACMAN_DISTANCE>0){
                 this.PACMAN_DISTANCE--; 
             }
