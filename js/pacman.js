@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         IMPOSSIBLE_WAYS:['P','#','-','|'],
         PRISON_POSITION_X:null,
         PRISON_POSITION_Y:null,
-        STATE:null,
+        STATE:false,
         LEVEL:0,
     };
 
@@ -790,7 +790,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if(Game.STATE){
                     Player.DIRECTION='left';
                 }
-                if(!Player.CONTINUOUS_MOVE){
+                if(!Player.CONTINUOUS_MOVE && Game.STATE){
                     Player.moveDirection('left');
                 }
                 break;
@@ -798,7 +798,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if(Game.STATE){
                     Player.DIRECTION='right';
                 }
-                if(!Player.CONTINUOUS_MOVE){
+                if(!Player.CONTINUOUS_MOVE && Game.STATE){
                     Player.moveDirection('right');
                 }
                 break;
@@ -806,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if(Game.STATE){
                     Player.DIRECTION='up';
                 }
-                if(!Player.CONTINUOUS_MOVE){
+                if(!Player.CONTINUOUS_MOVE && Game.STATE){
                     Player.moveDirection('up');
                 }
                 break;
@@ -814,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if(Game.STATE){
                     Player.DIRECTION='down';
                 }
-                if(!Player.CONTINUOUS_MOVE){
+                if(!Player.CONTINUOUS_MOVE && Game.STATE){
                     Player.moveDirection('down');
                 }
                 break;  
@@ -953,6 +953,7 @@ document.addEventListener('DOMContentLoaded', function() {
         Player.startListening();
         Board.MAP = Board.MAPS[0];
         Sounds.playSound(Sounds.BG_SOUND,0.3,true);
+        
     }
     Game.run = function () {
         Game.STATE = true;
