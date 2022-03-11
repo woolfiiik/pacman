@@ -12,23 +12,32 @@ document.addEventListener('DOMContentLoaded', function() {
         STATE:null,
         LEVEL:0,
     };
+
     var Ghosts = {
+        NUM_OF_GHOSTS:7, //maximum of ghost 7
         GHOSTS: [],
         INTERVALS:[],
         CHECK_INTERVAL:null,
+        GHOSTS_SETTINGS:[
+          [8,9,'white'],   //position and color of first potencial ghost
+          [12,9,'red'], 
+          [8,13,'green'], 
+          [12,13,'blue'], 
+          [10,11,'yellow'],   
+          [8,11,'orange'],
+          [12,11,'purple'],
+        ],
     };
 
     Ghosts.init = function (){
-        this.GHOSTS[0] = new Ghost(8,9,'white');
-        this.GHOSTS[1] = new Ghost(12,9,'red');
-        this.GHOSTS[2] = new Ghost(8,13,'green');
-        this.GHOSTS[3] = new Ghost(12,13,'blue');
-        this.GHOSTS[4] = new Ghost(10,11,'yellow');
+        for (let i = 0; i < this.NUM_OF_GHOSTS; i++) {
+            this.GHOSTS[i] = new Ghost(this.GHOSTS_SETTINGS[i][0],this.GHOSTS_SETTINGS[i][1],this.GHOSTS_SETTINGS[i][2]);     
+        }
         this.setIntervals();
         this.CHECK_INTERVAL = setInterval(function(){Game.check();},10);
     }
     var Player = {
-        SPEED:250,
+        SPEED:150,
         START_POS_X:10,
         START_POS_Y:4,
         LAST_DIRECTION:null,
@@ -36,12 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
         IMMORTALITY_TIMER:null,
         INVENTORY:[],
         INTERVAL:null,
-        CONTINUOUS_MOVE:true,
+        CONTINUOUS_MOVE:false,
     };
-
-    
-
-    
 
     var Sounds = {   
         POLK:new Audio("sounds/polk.wav"),
@@ -61,9 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
         DIAMOND:new Audio("sounds/diamond.wav"),
     };
 
-
-   
-
     var Draw = {
         PUZZLE_SIZE:40,
         BACKGROUND:'black',
@@ -73,9 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function Ghost(positionX, positionY,color) {
-        this.SPEED = 700;          //original 600/800
-        this.SUPER_SPEED=400;       //original 300/400
-        this.NORMAL_SPEED=700;     //original 600/800
+        this.SPEED = 500;          //original 600/800
+        this.SUPER_SPEED=300;       //original 300/400
+        this.NORMAL_SPEED=500;     //original 600/800
         this.SLOW_SPEED=1000;
         this.COLOR = color;
         this.START_POS_X = positionX;
@@ -85,7 +87,9 @@ document.addEventListener('DOMContentLoaded', function() {
         this.POSSIBILITY = [];
         this.CURRENT_DIRECTION = null;
         this.SEE_PLAYER = false;
+        this.PACMAN_DISTANCE = 0;
         this.IN_PRISON = false;
+        this.FOLLOW_WAY=[];
         this.draw = function(){
             this.getCoordinates();
             Draw.ghost(this.COORDINATES_X,this.COORDINATES_Y,this.COLOR);
@@ -96,14 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         this.checkSeePlayer = function () {
             var wallCount;
+            var distance;
             this.SEE_PLAYER=false;
             
-
-
             if(this.START_POS_X==Player.START_POS_X){
                 if(this.START_POS_Y>Player.START_POS_Y){
                     wallCount=0;
-                    for (let i = Player.START_POS_Y; i <= this.START_POS_Y; i++) {
+                    distance=0;
+                    for (let i = Player.START_POS_Y; i <= this.START_POS_Y-1; i++) {
+                        distance++;
                         if(Board.MAP[i][this.START_POS_X]=='#'||Board.MAP[i][this.START_POS_X]=='-'||Board.MAP[i][this.START_POS_X]=='|'){
                             wallCount++ 
 
@@ -111,12 +116,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     if(wallCount==0){
                         this.SEE_PLAYER='left';
-                        
+                        this.PACMAN_DISTANCE=distance;
                     }        
                 }
                 if(this.START_POS_Y<Player.START_POS_Y){
                     wallCount=0;
-                    for (let i = this.START_POS_Y; i <=Player.START_POS_Y ; i++) {
+                    distance=0;
+                    for (let i = this.START_POS_Y+1; i <=Player.START_POS_Y; i++) {
+                        distance++;
                         if(Board.MAP[i][this.START_POS_X]=='#'||Board.MAP[i][this.START_POS_X]=='-'||Board.MAP[i][this.START_POS_X]=='|'){
                             wallCount++ 
                         }  
@@ -124,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     if(wallCount==0){
                         this.SEE_PLAYER='right';
-                       
+                        this.PACMAN_DISTANCE=distance;
                     }
                 }
             }
@@ -132,28 +139,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if(this.START_POS_X>Player.START_POS_X){
                     wallCount=0;
-                    for (let i = Player.START_POS_X; i <= this.START_POS_X; i++) {
+                    distance=0;
+                    for (let i = Player.START_POS_X; i <= this.START_POS_X-1; i++) {
+                        distance++;
                         if(Board.MAP[this.START_POS_Y][i]=='#'||Board.MAP[this.START_POS_Y][i]=='-'||Board.MAP[this.START_POS_Y][i]=='|'){
                             wallCount++
                         }
                     } 
                     if(wallCount==0){
                         this.SEE_PLAYER='up';
-                            
+                        this.PACMAN_DISTANCE=distance;    
                     }       
                 }
                 if(this.START_POS_X<Player.START_POS_X){
-                    wallCount=0
-                    for (let i = this.START_POS_X; i <=Player.START_POS_X ; i++) {
+                    wallCount=0;
+                    distance=0;
+                    for (let i = this.START_POS_X+1; i <=Player.START_POS_X ; i++) {
+                        distance++;
                         if(Board.MAP[this.START_POS_Y][i]=='#'||Board.MAP[this.START_POS_Y][i]=='-'||Board.MAP[this.START_POS_Y][i]=='|'){
                             wallCount++
-                            
                         }  
                         
                     }
                     if(wallCount==0){
                         this.SEE_PLAYER='down';
-                        
+                        this.PACMAN_DISTANCE=distance;
                     }
                 }
             }
@@ -163,6 +173,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
         };
+
+        this.findWay = function(x,y){
+            finish = new Coordinates(x,y);
+            start = new Coordinates(this.START_POS_X,this.START_POS_Y);
+            this.FOLLOW_WAY = GetShortestWay(start,finish,Board.MAP,Game.IMPOSSIBLE_WAYS);  
+            this.SPEED = this.SUPER_SPEED;
+        };
+
         this.move = function () {
             if(!this.IN_PRISON){
                 this.checkSeePlayer();
@@ -181,16 +199,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 var random;
                 var speed;
+
                 if(this.SEE_PLAYER!=false && !Game.IMMORTALITY){
+                    this.FOLLOW_WAY=[];
                     Sounds.playSound(Sounds.MONSTER_LAUGH,0.7);
                     random=this.SEE_PLAYER;
                     this.CURRENT_DIRECTION=this.SEE_PLAYER;
                     speed=this.SUPER_SPEED; 
                 }
+                else if(this.PACMAN_DISTANCE>0 && !Game.IMMORTALITY){
+                    speed=this.NORMAL_SPEED;  
+                    random=this.CURRENT_DIRECTION;                     
+                }
                 else{
+                    this.PACMAN_DISTANCE=0;
                     speed=this.NORMAL_SPEED;
                 random =this.getRandomMove();
                 }
+                
                 if(this.SPEED!=speed){
                     this.SPEED=speed;
                     Ghosts.setIntervals();
@@ -212,9 +238,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     default:
                         break;
                 }
+                if(this.FOLLOW_WAY.length!==0){
+                    this.START_POS_X = this.FOLLOW_WAY[0].x;
+                    this.START_POS_Y = this.FOLLOW_WAY[0].y;
+                    this.FOLLOW_WAY.shift();
+                }
                 this.draw(this.COORDINATES_X,this.COORDINATES_Y,this.COLOR);
+                
+            }
+            if(this.PACMAN_DISTANCE>0){
+                this.PACMAN_DISTANCE--; 
             }
         };
+
         this.getPossibleWays = function () {
                 this.POSSIBILITY=[true,true,true,true];
                 
@@ -234,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
         };
+
         this.getRandomMove = function(){
             this.getPossibleWays();
             var newDirection=['left','right','down','up'];
@@ -386,7 +423,6 @@ document.addEventListener('DOMContentLoaded', function() {
         this.circle(x+radius*2.8,y+radius/8,this.PUZZLE_SIZE/2.1,0,2 * Math.PI,'orange');
     }
 
-
     Draw.gameOver = function (){
         Draw.blankWindow();
         this.context.fillStyle = 'white';
@@ -408,6 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.context.font = '35px serif';
         this.context.fillText('Your Score: '+Game.SCORE,this.PUZZLE_SIZE*(Game.SIZE_W/3.6),this.PUZZLE_SIZE*(Game.SIZE_W/3));
     }
+
     Draw.blankWindow = function () {
         for (let i = 0; i < Game.SIZE_W; i++) {
             for (let j = 0; j < Game.SIZE_H; j++) {
@@ -690,6 +727,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 Draw.updateInventory();
                 Board.clearField(x,y);;
                 Sounds.playSound(Sounds.PILL,1);
+                Ghosts.GHOSTS.forEach(ghost => {
+                    ghost.findWay(x,y);
+                });
                 break;
             case '-':
                 if(Player.searchInventory('K')){
@@ -734,6 +774,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.START_POS_Y+=diffY;
         x= (this.START_POS_X*Draw.PUZZLE_SIZE)+Draw.PUZZLE_SIZE/2;
         y= (this.START_POS_Y*Draw.PUZZLE_SIZE)+Draw.PUZZLE_SIZE/2;
+        
         Draw.pacman(x,y,direction);
     }
 
@@ -838,7 +879,10 @@ document.addEventListener('DOMContentLoaded', function() {
         sound.play();  
     }
 
-    Game.check = function (){
+    Game.check = function (){      
+        // for (let i = 0; i < Ghosts.GHOSTS.length; i++) {
+        //     Ghosts.GHOSTS[i].checkSeePlayer();    
+        // }
         var stars=0;
         for (let g = 0; g < Game.SIZE_W; g++) {
             for (let h = 0; h < Game.SIZE_H; h++) {
@@ -948,7 +992,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         clearInterval(Ghosts.CHECK_INTERVAL);
         Player.stopListening();
-        console.log('end');
     }
 
     Game.start();  
