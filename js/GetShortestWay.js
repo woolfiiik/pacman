@@ -12,7 +12,7 @@ let GetShortestWay = function (startPosition, finishPosition, MAP, impossibleWay
     
     freeWays = function (xy){  
         let possibleWays = [];
-<<<<<<< HEAD
+
             if(!this.impossibleWays.includes(this.MAP[xy.y][xy.x-1])){   
                 let coo = new Coordinates(xy.x-1,xy.y,xy.id);
                 possibleWays.push(coo);
@@ -30,28 +30,7 @@ let GetShortestWay = function (startPosition, finishPosition, MAP, impossibleWay
                 possibleWays.push(coo);
             }                
         return possibleWays;
-        console.log(possibleWays);
-=======
-        for (let i = 0; i < this.impossibleWays.length; i++) {
-            if(this.MAP[xy.y][xy.x-1]!=this.impossibleWays[i]){
-                let coo = new Coordinates(xy.x-1,xy.y,xy.id);
-                possibleWays.push(coo);
-            }     
-            if(this.MAP[xy.y][xy.x+1]!=this.impossibleWays[i]){
-                let coo = new Coordinates(xy.x+1,xy.y,xy.id);
-                possibleWays.push(coo);
-            }
-            if(this.MAP[xy.y-1][xy.x]!=this.impossibleWays[i]){
-                let coo = new Coordinates(xy.x,xy.y-1,xy.id);
-                possibleWays.push(coo);
-            }   
-            if(this.MAP[xy.y+1][xy.x]!=this.impossibleWays[i]){
-                let coo = new Coordinates(xy.x,xy.y+1,xy.id);
-                possibleWays.push(coo);
-            }      
-        }
-        return possibleWays;
->>>>>>> 86d4ba9c9c5ab3bc5046a82ab72ee643bd106bdd
+
     };
     search = function(){   
         while(aim==false) {

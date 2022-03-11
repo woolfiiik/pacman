@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     var Ghosts = {
-        NUM_OF_GHOSTS:7, //maximum of ghost 7
+        NUM_OF_GHOSTS:5, //maximum of ghost 7
         GHOSTS: [],
         INTERVALS:[],
         CHECK_INTERVAL:null,
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
             finish = new Coordinates(x,y);
             start = new Coordinates(this.START_POS_X,this.START_POS_Y);
             this.FOLLOW_WAY = GetShortestWay(start,finish,Board.MAP,Game.IMPOSSIBLE_WAYS);  
-            this.SPEED = this.SUPER_SPEED;
+            Sounds.playSound(Sounds.MONSTER_LAUGH,0.7);
         };
 
         this.move = function () {
